@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Using External APIs</title>
-    <script src="app.js"></script> <!-- Do i put this at the bottom? -->
-    <script src="script.js"></script>
+   
 </head>
 <body>
-    
+    <h1>Music Dashboard</h1>
+    <form id="searchForm">
+      <input type="text" id="query" name="query" placeholder="Enter song or artist">
+      <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+  
+    <script src="app.js"></script> 
+    <script src="client.js"></script>
 </body>
 </html>

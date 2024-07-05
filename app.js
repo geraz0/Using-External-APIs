@@ -1,13 +1,14 @@
-//this is the server-side js
-//You will create an Express server (app.js) that will handle requests and responses.
-//This server will act as a middleman between your front-end (HTML + JavaScript) and the external API.
-//The server will receive a request from the client-side JavaScript, call the external API to get the weather data, and then send that data back to the client-side.
-
-
+// Import required modules
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
+// Load environment variables from .env file
+dotenv.config();
+
+// Create an instance of express
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +16,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Implementing CORS
+const corsOptions = {
+   origin: '*', 
+   credentials: true, // access-control-allow-credentials:true
+   optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // Route to serve the index.html
 app.get('/', (req, res) => {
@@ -29,7 +38,7 @@ app.post('/search', async (req, res) => {
     url: 'https://shazam.p.rapidapi.com/search',
     params: { term: query, locale: 'en-US', offset: '0', limit: '5' },
     headers: {
-      'x-rapidapi-key': 'a6af4fa86emsh19b65663a5cab58p11c3e8jsnd1161c8947b7',
+      'x-rapidapi-key': process.env.SHAZAM_API_KEY,
       'x-rapidapi-host': 'shazam.p.rapidapi.com'
     }
   };
@@ -37,7 +46,10 @@ app.post('/search', async (req, res) => {
   try {
     const response = await axios.request(options);
     if (response.status === 200) {
-      const songs = response.data.tracks.hits;
+      const songs = response.data.tracks.hits.map(hit => ({
+        track: hit.track.title,
+        artist: hit.track.subtitle
+      }));
       res.status(200).json(songs);
     } else {
       res.status(response.status).json({ error: `API responded with status code ${response.status}` });

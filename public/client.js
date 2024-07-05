@@ -35,4 +35,4 @@ document.getElementById('searchForm').addEventListener('submit', async function(
   } catch (error) {
       resultsContainer.textContent = `Error: ${error.message}`;
   }
-});
+});  
